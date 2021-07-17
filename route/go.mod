@@ -1,4 +1,4 @@
-module github/shuifa/route
+module github/shuifa/golang/route
 
 go 1.16
 

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	pb "github/shuifa/route"
+	pb "github/shuifa/golang/route"
 	"google.golang.org/grpc"
 	"log"
 )
