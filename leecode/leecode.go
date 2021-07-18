@@ -1,16 +1,158 @@
 package main
 
 import (
+	"container/list"
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	fmt.Println(myAtoi("+-132  1ssdas"))
+	fmt.Println(isValid("()[]{}"))
 }
 
+//  有效的括号
+func isValid(s string) bool {
+
+	var h = map[byte]byte{'}': '{', ']': '[', ')': '('}
+	var li list.List
+
+	for i := 0; i < len(s); i++ {
+		if s[i] == '{' || s[i] == '[' || s[i] == '('{
+			li.PushBack(s[i])
+		} else if li.Len() == 0{
+			return false
+		} else  {
+			e := li.Back()
+			if e.Value != h[s[i]] {
+				return false
+			}
+			li.Remove(e)
+		}
+	}
+
+	if li.Len() > 0 {
+		return false
+	}
+
+	return true
+}
+
+// 最接近的三数之和
+func threeSumClosest(nums []int, target int) int {
+	sort.Ints(nums)
+	var l = len(nums)
+	var nearest = math.MaxInt32
+
+	for fir := 0; fir < l; fir++ {
+		if fir > 0 && nums[fir] == nums[fir-1] {
+			continue
+		}
+		sec, thi := fir+1, l-1
+		for sec < thi {
+			sum := nums[fir] + nums[sec] + nums[thi]
+			if sum == target {
+				return sum
+			}
+			if abs(sum-target) < abs(nearest-target) {
+				nearest = sum
+			}
+			if sum > target {
+				t := thi - 1
+				for sec < t && nums[t] == nums[thi] {
+					t--
+				}
+				thi = t
+			} else {
+				t := sec + 1
+				for t < thi && nums[t] == nums[sec] {
+					t++
+				}
+				sec = t
+			}
+		}
+	}
+
+	return nearest
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -1 * x
+	}
+	return x
+}
+
+// 三数之和
+func threeSum(nums []int) [][]int {
+	sort.Ints(nums)
+	l := len(nums)
+	ret := make([][]int, 0)
+
+	for fir := 0; fir < l; fir++ {
+		if fir > 0 && nums[fir] == nums[fir-1] {
+			continue
+		}
+		thi := l - 1
+		for sec := fir + 1; sec < l; sec++ {
+			if sec > fir+1 && nums[sec] == nums[sec-1] {
+				continue
+			}
+
+			for sec < thi && nums[sec]+nums[thi] > -1*nums[fir] {
+				thi--
+			}
+
+			if thi == sec {
+				break
+			}
+
+			if nums[sec]+nums[thi] == -1*nums[fir] {
+				ret = append(ret, []int{nums[sec], nums[thi], nums[fir]})
+			}
+		}
+	}
+
+	return ret
+}
+
+//  最长公共前缀
+func longestCommonPrefix(strs []string) string {
+	var ret string
+	if len(strs) == 0 {
+		return ret
+	}
+
+	fStr := strs[0]
+	var max, end int = len(fStr), len(fStr)
+
+	for i := 1; i < len(strs); i++ {
+		if len(strs[i]) == 0 {
+			return ret
+		}
+		for start := 0; start < len(strs[i]) && start < max; start++ {
+			if strs[i][start] != fStr[start] {
+				end = start
+				break
+			}
+			end = start + 1
+		}
+
+		if end < max {
+			max = end
+		}
+
+		if end == 0 {
+			break
+		}
+	}
+
+	return fStr[:end]
+}
+
+//  字符串转换整数 (atoi)
 func myAtoi(s string) int {
 
 	var symbol int = 1
