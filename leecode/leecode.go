@@ -10,7 +10,24 @@ import (
 )
 
 func main() {
-	fmt.Println(isValid("()[]{}"))
+	fmt.Println(groupAnagrams([]string{"eat","tea","tan","ate","nat","bat"}))
+}
+
+// 变位词组
+func groupAnagrams(strs []string) [][]string {
+	var h = make(map[[26]int][]string)
+	for _, str := range strs {
+		t := [26]int{}
+		for i := 0; i < len(str); i++ {
+			t[str[i]-'a']++
+		}
+		h[t] = append(h[t], str)
+	}
+	var ret [][]string
+	for _, s := range h {
+		ret = append(ret, s)
+	}
+	return ret
 }
 
 //  有效的括号
