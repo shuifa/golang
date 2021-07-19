@@ -13,6 +13,11 @@ func main() {
 	fmt.Println(groupAnagrams([]string{"eat","tea","tan","ate","nat","bat"}))
 }
 
+//  最高频元素的频数
+func maxFrequency(nums []int, k int) int {
+	return k
+}
+
 // 变位词组
 func groupAnagrams(strs []string) [][]string {
 	var h = make(map[[26]int][]string)
