@@ -9,13 +9,57 @@ import (
 	"strings"
 )
 
+
+ type ListNode struct {
+      Val int
+      Next *ListNode
+ }
+
+
 func main() {
 	fmt.Println(groupAnagrams([]string{"eat","tea","tan","ate","nat","bat"}))
 }
 
+
+//  两个链表的第一个公共节点
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+
+	aNode, bNode := headA, headB
+	for aNode != bNode {
+		if aNode == nil {
+			aNode = headB
+		} else {
+			aNode = aNode.Next
+		}
+		if bNode == nil {
+			bNode = headA
+		} else {
+			bNode = bNode.Next
+		}
+	}
+	return aNode
+}
+
 //  最高频元素的频数
 func maxFrequency(nums []int, k int) int {
-	return k
+	sort.Ints(nums)
+	ans := 1
+	for l, r, total := 0, 1, 0; r < len(nums); r++ {
+		total += (nums[r] - nums[r-1]) * (r - l)
+		for total > k {
+			total -= nums[r] - nums[l]
+			l++
+		}
+		ans = max(ans, r-l+1)
+	}
+	return ans
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 
 // 变位词组
