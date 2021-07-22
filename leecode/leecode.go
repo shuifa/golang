@@ -16,8 +16,48 @@ import (
  }
 
 
+type Node struct {
+  Val int
+  Next *Node
+  Random *Node
+}
+
+
+
 func main() {
 	fmt.Println(groupAnagrams([]string{"eat","tea","tan","ate","nat","bat"}))
+}
+
+
+//  复制带随机指针的链表
+func copyRandomList(head *Node) *Node {
+	if head == nil {
+		return nil
+	}
+	var newNode = &Node{}
+	t2 := newNode
+	var m = make([]*Node, 0)
+	var h1 = make(map[*Node]int)
+
+	t1 := head
+	for t1 != nil {
+		t2.Next = &Node{Val:t1.Val,Random: t1.Random}
+		m = append(m, t2.Next)
+		h1[t1] = len(m) - 1
+		t2 = t2.Next
+		t1 = t1.Next
+	}
+
+	t3 := newNode.Next
+	for t3 != nil {
+		if t3.Random != nil {
+			j := h1[t3.Random]
+			t3.Random = m[j]
+		}
+		t3 = t3.Next
+	}
+
+	return newNode.Next
 }
 
 
