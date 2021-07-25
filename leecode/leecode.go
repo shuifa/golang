@@ -25,9 +25,103 @@ type Node struct {
 
 
 func main() {
-	fmt.Println(groupAnagrams([]string{"eat","tea","tan","ate","nat","bat"}))
+	fmt.Println(restoreArray([][]int{{2,1},{3,4},{3, 2}}))
 }
 
+//  . 从相邻元素对还原数组
+func restoreArray(adjacentPairs [][]int) []int {
+
+	m := make(map[int][]int)
+	for _, pair := range adjacentPairs {
+		m[pair[0]] = append(m[pair[0]], pair[1])
+		m[pair[1]] = append(m[pair[1]], pair[0])
+	}
+	s := make([]int, len(m))
+	for i, v := range m {
+		if len(v) == 1 {
+			s[0] = i
+		}
+	}
+	start := s[0]
+	l := 1
+	for l < len(m) {
+		next := m[start]
+		for _, v1 := range next {
+			if (l == 1 && v1 != s[l-1]) ||  v1 != s[l-2]{
+				s[l] = v1
+				start = v1
+				l++
+				break
+			}
+		}
+	}
+	return s
+}
+
+//  检查是否所有字符出现次数相同
+func areOccurrencesEqual(s string) bool {
+	var h = make(map[byte]int)
+	for i := 0; i < len(s); i++ {
+		h[s[i]]++
+	}
+	var pre int
+	var flag bool
+	fmt.Println(h)
+	for _, i := range h {
+		if !flag {
+			pre = i
+			flag = true
+		} else if i != pre {
+			return false
+		}
+	}
+	return false
+}
+
+//  替换隐藏数字得到的最晚时间
+func maximumTime(time string) string {
+	var ret = strings.Split(time, "")
+	for i := 0; i < len(time); i++ {
+		if time[i] == '?' {
+			if i == 0 {
+				if ret[1] == "?" || ret[1] == "0" || ret[1] == "1" || ret[1] == "2" || ret[1] == "3"{
+					ret[i] = "2"
+				} else {
+					ret[i] = "1"
+				}
+			} else if i == 1 {
+				if ret[0] == "2" {
+					ret[1] = "3"
+				} else {
+					ret[1] = "9"
+				}
+			} else if i == 3 {
+				ret[3] = "5"
+			} else {
+				ret[4] = "9"
+			}
+		}
+	}
+
+	return strings.Join(ret, "")
+}
+
+// 检查是否区域内所有整数都被覆盖
+func isCovered(ranges [][]int, left, right int) bool {
+	diff := [52]int{} // 差分数组
+	for _, r := range ranges {
+		diff[r[0]]++
+		diff[r[1]+1]--
+	}
+	cnt := 0 // 前缀和
+	for i := 1; i <= 50; i++ {
+		cnt += diff[i]
+		if cnt <= 0 && left <= i && i <= right {
+			return false
+		}
+	}
+	return true
+}
 
 //  复制带随机指针的链表
 func copyRandomList(head *Node) *Node {
