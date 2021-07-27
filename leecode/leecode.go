@@ -16,6 +16,13 @@ import (
  }
 
 
+ type TreeNode struct {
+     Val int
+     Left *TreeNode
+     Right *TreeNode
+ }
+
+
 type Node struct {
   Val int
   Next *Node
@@ -25,8 +32,50 @@ type Node struct {
 
 
 func main() {
-	fmt.Println(restoreArray([][]int{{2,1},{3,4},{3, 2}}))
+	fmt.Println(minOperations([]int{6,4,8,1,3,2}, []int{4,7,6,2,3,8,6,1}))
 }
+
+//  二叉树中第二小的节点
+var minVal, ans int
+func findSecondMinimumValue(root *TreeNode) int {
+	minVal = root.Val
+	ans = -1
+	rangeTree(root)
+	return ans
+}
+
+func rangeTree(root *TreeNode)  {
+	if root == nil || (ans != -1 && root.Val >= ans) {
+		return
+	}
+	if root.Val > minVal {
+		ans = root.Val
+		return
+	}
+	rangeTree(root.Left)
+	rangeTree(root.Right)
+}
+
+// 得到子序列的最少操作次数
+func minOperations(target, arr []int) int {
+	n := len(target)
+	pos := make(map[int]int, n)
+	for i, val := range target {
+		pos[val] = i
+	}
+	var d []int
+	for _, val := range arr {
+		if idx, has := pos[val]; has {
+			if p := sort.SearchInts(d, idx); p < len(d) {
+				d[p] = idx
+			} else {
+				d = append(d, idx)
+			}
+		}
+	}
+	return n - len(d)
+}
+
 
 //  . 从相邻元素对还原数组
 func restoreArray(adjacentPairs [][]int) []int {
