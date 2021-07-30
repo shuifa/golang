@@ -32,7 +32,26 @@ type Node struct {
 
 
 func main() {
-	fmt.Println(minOperations([]int{6,4,8,1,3,2}, []int{4,7,6,2,3,8,6,1}))
+	fmt.Println(pathInZigZagTree(14))
+}
+
+// 二叉树寻路
+func pathInZigZagTree(label int) []int {
+
+	ret := make([]int, 0)
+
+	for label >= 1 {
+		ret = append([]int{label}, ret...)
+		label >>= 1
+	}
+	start := ret[len(ret)-1]
+
+	for i := len(ret) - 2; i > 0; i-- {
+		ret[i] = 3 * (2 << (i - 1)) - 1 -  start >> 1
+		start = ret[i]
+	}
+
+	return ret
 }
 
 //  二叉树中第二小的节点
