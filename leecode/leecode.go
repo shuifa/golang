@@ -32,8 +32,18 @@ type Node struct {
 
 
 func main() {
-	fmt.Println(pathInZigZagTree(14))
+	fmt.Println(titleToNumber("FXSHRXW"))
 }
+
+//  Excel表列序号
+func titleToNumber(columnTitle string) int {
+	var ans int
+	for i := 0; i < len(columnTitle); i++ {
+		ans += int(columnTitle[i] - 'A' + 1) * int(math.Pow(26, float64(len(columnTitle) - i - 1)))
+	}
+	return ans
+}
+
 
 // 二叉树寻路
 func pathInZigZagTree(label int) []int {
