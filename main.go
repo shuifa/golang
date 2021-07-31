@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/shuifa/pool"
+	"github.com/shuifa/golang/pool"
 	"io"
 	"log"
 	"math/rand"
