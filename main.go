@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/shuifa/golang/pool"
 	"io"
 	"log"
 	"math/rand"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/shuifa/golang/pool"
 )
 
 var (
