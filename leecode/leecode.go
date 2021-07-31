@@ -32,7 +32,36 @@ type Node struct {
 
 
 func main() {
-	fmt.Println(minOperations([]int{6,4,8,1,3,2}, []int{4,7,6,2,3,8,6,1}))
+	fmt.Println(titleToNumber("FXSHRXW"))
+}
+
+//  Excel表列序号
+func titleToNumber(columnTitle string) int {
+	var ans int
+	for i := 0; i < len(columnTitle); i++ {
+		ans += int(columnTitle[i] - 'A' + 1) * int(math.Pow(26, float64(len(columnTitle) - i - 1)))
+	}
+	return ans
+}
+
+
+// 二叉树寻路
+func pathInZigZagTree(label int) []int {
+
+	ret := make([]int, 0)
+
+	for label >= 1 {
+		ret = append([]int{label}, ret...)
+		label >>= 1
+	}
+	start := ret[len(ret)-1]
+
+	for i := len(ret) - 2; i > 0; i-- {
+		ret[i] = 3 * (2 << (i - 1)) - 1 -  start >> 1
+		start = ret[i]
+	}
+
+	return ret
 }
 
 func distanceK(root, target *TreeNode, k int) (ans []int) {
