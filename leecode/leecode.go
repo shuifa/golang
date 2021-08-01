@@ -55,6 +55,37 @@ func main() {
 	fmt.Println(verticalTraversal(d))
 }
 
+// 矩阵中战斗力最弱的 K 行
+func kWeakestRows(mat [][]int, k int) []int {
+	var weaks [][]int
+	for i, m := range mat {
+		count := 0
+		for _, v := range m {
+			if v == 0 {
+				break
+			}
+			count++
+		}
+		weaks = append(weaks, []int{i, count})
+	}
+
+	sort.Slice(weaks, func(i, j int) bool {
+		return weaks[i][1] < weaks[j][1] || (weaks[i][1] == weaks[j][1] && weaks[i][0] < weaks[j][0])
+	})
+
+	var ans []int
+
+	if len(weaks) < k {
+		k = len(weaks)
+	}
+
+	for i := 0; i < k; i++{
+	    ans = append(ans, weaks[i][0])
+	}
+
+	return ans
+}
+
 // 二叉树的垂序遍历
 func verticalTraversal(root *TreeNode) [][]int {
 	//  记录每个节点的 row 和 col
