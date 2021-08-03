@@ -79,6 +79,86 @@ func networkDelayTime(times [][]int, n int, k int) int {
 	return ansMin
 }
 
+// 矩阵中战斗力最弱的 K 行
+func kWeakestRows(mat [][]int, k int) []int {
+	var weaks [][]int
+	for i, m := range mat {
+		count := 0
+		for _, v := range m {
+			if v == 0 {
+				break
+			}
+			count++
+		}
+		weaks = append(weaks, []int{i, count})
+	}
+
+	sort.Slice(weaks, func(i, j int) bool {
+		return weaks[i][1] < weaks[j][1] || (weaks[i][1] == weaks[j][1] && weaks[i][0] < weaks[j][0])
+	})
+
+	var ans []int
+
+	if len(weaks) < k {
+		k = len(weaks)
+	}
+
+	for i := 0; i < k; i++{
+	    ans = append(ans, weaks[i][0])
+	}
+
+	return ans
+}
+
+// 二叉树的垂序遍历
+func verticalTraversal(root *TreeNode) [][]int {
+	//  记录每个节点的 row 和 col
+	traversals := map[*TreeNode][]int{}
+	var setColumn func(node *TreeNode, level int, column int)
+	setColumn = func(node *TreeNode, level int, column int) {
+		if node == nil {
+			return
+		}
+		traversals[node] = []int{level, column}
+		setColumn(node.Left, level+1, column-1)
+		setColumn(node.Right, level+1, column+1)
+
+	}
+	setColumn(root, 0, 0)
+
+	var rMap = make(map[int][][]int)
+	var columns []int
+	var ans [][]int
+
+	for node, traver := range traversals {
+		if v, has := rMap[traver[1]]; has {
+			rMap[traver[1]] = append(v, []int{traver[0], node.Val})
+		} else {
+			rMap[traver[1]] = [][]int{{traver[0], node.Val}}
+			columns = append(columns, traver[1])
+		}
+	}
+
+	sort.Ints(columns)
+
+	for _, column := range columns {
+		values := rMap[column]
+
+		sort.Slice(values, func(i, j int) bool {
+			return values[i][0] < values[j][0] || (values[i][0] == values[j][0] && values[i][1] < values[j][1])
+		})
+		var tS []int
+
+		for _, value := range values {
+			tS = append(tS, value[1])
+		}
+
+		ans = append(ans, tS)
+	}
+
+	return ans
+}
+
 //  Excel表列序号
 func titleToNumber(columnTitle string) int {
 	var ans int
@@ -105,6 +185,46 @@ func pathInZigZagTree(label int) []int {
 	}
 
 	return ret
+}
+
+func distanceK(root, target *TreeNode, k int) (ans []int) {
+	// 从 root 出发 DFS，记录每个结点的父结点
+	parents := map[int]*TreeNode{}
+	var findParents func(*TreeNode)
+	findParents = func(node *TreeNode) {
+		if node.Left != nil {
+			parents[node.Left.Val] = node
+			findParents(node.Left)
+		}
+		if node.Right != nil {
+			parents[node.Right.Val] = node
+			findParents(node.Right)
+		}
+	}
+	findParents(root)
+
+	// 从 target 出发 DFS，寻找所有深度为 k 的结点
+	var findAns func(*TreeNode, *TreeNode, int)
+	findAns = func(node, from *TreeNode, depth int) {
+		if node == nil {
+			return
+		}
+		if depth == k { // 将所有深度为 k 的结点的值计入结果
+			ans = append(ans, node.Val)
+			return
+		}
+		if node.Left != from {
+			findAns(node.Left, node, depth+1)
+		}
+		if node.Right != from {
+			findAns(node.Right, node, depth+1)
+		}
+		if parents[node.Val] != from {
+			findAns(parents[node.Val], node, depth+1)
+		}
+	}
+	findAns(target, nil, 0)
+	return
 }
 
 //  二叉树中第二小的节点
