@@ -9,41 +9,84 @@ import (
 	"strings"
 )
 
-
- type ListNode struct {
-      Val int
-      Next *ListNode
- }
-
-
- type TreeNode struct {
-     Val int
-     Left *TreeNode
-     Right *TreeNode
- }
-
-
-type Node struct {
-  Val int
-  Next *Node
-  Random *Node
+type ListNode struct {
+	Val  int
+	Next *ListNode
 }
 
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
 
+type Node struct {
+	Val    int
+	Next   *Node
+	Random *Node
+}
 
 func main() {
-	fmt.Println(titleToNumber("FXSHRXW"))
+	fmt.Println(networkDelayTime([][]int{{1,2,1}, {2,3,2},{1,3,2}}, 3, 1))
+}
+
+// 网络延迟时间
+func networkDelayTime(times [][]int, n int, k int) int {
+
+	var nodes = make(map[int][][]int, 0)
+	for _, time := range times {
+		nodes[time[0]] = append(nodes[time[0]], time)
+	}
+
+	if _, ok := nodes[k]; !ok {
+		return -1
+	}
+	var tM = make(map[int]bool)
+	var ansMin, ansMax int
+
+	tNode := []int{k}
+	tM[k] = true
+
+	for len(tNode) > 0 {
+		t := tNode
+		tNode = []int{}
+
+		for _, v := range t {
+			if node, ok := nodes[v]; ok {
+				for _, n := range node {
+					if !tM[n[1]] {
+						if n[1] > k {
+							ansMax += n[2]
+						} else {
+							ansMin += n[2]
+						}
+						tNode = append(tNode, n[1])
+					}
+					tM[n[1]] = true
+				}
+			}
+		}
+	}
+
+	if len(tM) < n {
+		return -1
+	}
+
+	if ansMax > ansMin {
+		return ansMax
+	}
+
+	return ansMin
 }
 
 //  Excel表列序号
 func titleToNumber(columnTitle string) int {
 	var ans int
 	for i := 0; i < len(columnTitle); i++ {
-		ans += int(columnTitle[i] - 'A' + 1) * int(math.Pow(26, float64(len(columnTitle) - i - 1)))
+		ans += int(columnTitle[i]-'A'+1) * int(math.Pow(26, float64(len(columnTitle)-i-1)))
 	}
 	return ans
 }
-
 
 // 二叉树寻路
 func pathInZigZagTree(label int) []int {
@@ -57,7 +100,7 @@ func pathInZigZagTree(label int) []int {
 	start := ret[len(ret)-1]
 
 	for i := len(ret) - 2; i > 0; i-- {
-		ret[i] = 3 * (2 << (i - 1)) - 1 -  start >> 1
+		ret[i] = 3*(2<<(i-1)) - 1 - start>>1
 		start = ret[i]
 	}
 
@@ -66,6 +109,7 @@ func pathInZigZagTree(label int) []int {
 
 //  二叉树中第二小的节点
 var minVal, ans int
+
 func findSecondMinimumValue(root *TreeNode) int {
 	minVal = root.Val
 	ans = -1
@@ -73,7 +117,7 @@ func findSecondMinimumValue(root *TreeNode) int {
 	return ans
 }
 
-func rangeTree(root *TreeNode)  {
+func rangeTree(root *TreeNode) {
 	if root == nil || (ans != -1 && root.Val >= ans) {
 		return
 	}
@@ -105,7 +149,6 @@ func minOperations(target, arr []int) int {
 	return n - len(d)
 }
 
-
 //  . 从相邻元素对还原数组
 func restoreArray(adjacentPairs [][]int) []int {
 
@@ -125,7 +168,7 @@ func restoreArray(adjacentPairs [][]int) []int {
 	for l < len(m) {
 		next := m[start]
 		for _, v1 := range next {
-			if (l == 1 && v1 != s[l-1]) ||  v1 != s[l-2]{
+			if (l == 1 && v1 != s[l-1]) || v1 != s[l-2] {
 				s[l] = v1
 				start = v1
 				l++
@@ -162,7 +205,7 @@ func maximumTime(time string) string {
 	for i := 0; i < len(time); i++ {
 		if time[i] == '?' {
 			if i == 0 {
-				if ret[1] == "?" || ret[1] == "0" || ret[1] == "1" || ret[1] == "2" || ret[1] == "3"{
+				if ret[1] == "?" || ret[1] == "0" || ret[1] == "1" || ret[1] == "2" || ret[1] == "3" {
 					ret[i] = "2"
 				} else {
 					ret[i] = "1"
@@ -213,7 +256,7 @@ func copyRandomList(head *Node) *Node {
 
 	t1 := head
 	for t1 != nil {
-		t2.Next = &Node{Val:t1.Val,Random: t1.Random}
+		t2.Next = &Node{Val: t1.Val, Random: t1.Random}
 		m = append(m, t2.Next)
 		h1[t1] = len(m) - 1
 		t2 = t2.Next
@@ -231,7 +274,6 @@ func copyRandomList(head *Node) *Node {
 
 	return newNode.Next
 }
-
 
 //  两个链表的第一个公共节点
 func getIntersectionNode(headA, headB *ListNode) *ListNode {
@@ -298,11 +340,11 @@ func isValid(s string) bool {
 	var li list.List
 
 	for i := 0; i < len(s); i++ {
-		if s[i] == '{' || s[i] == '[' || s[i] == '('{
+		if s[i] == '{' || s[i] == '[' || s[i] == '(' {
 			li.PushBack(s[i])
-		} else if li.Len() == 0{
+		} else if li.Len() == 0 {
 			return false
-		} else  {
+		} else {
 			e := li.Back()
 			if e.Value != h[s[i]] {
 				return false
