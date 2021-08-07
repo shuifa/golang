@@ -14,6 +14,9 @@ type Context struct {
 	Writer     http.ResponseWriter
 	Request    *http.Request
 	StatusCode int
+	Params     map[string]string
+	Handlers   []HandlerFunc
+	Index      int
 }
 
 func NewContext(w http.ResponseWriter, r *http.Request) *Context {
@@ -22,6 +25,8 @@ func NewContext(w http.ResponseWriter, r *http.Request) *Context {
 		Method:  r.Method,
 		Writer:  w,
 		Request: r,
+		Params:  make(map[string]string),
+		Index:   -1,
 	}
 }
 
@@ -48,7 +53,7 @@ func (ctx *Context) String(code int, format string, values ...interface{}) {
 	ctx.Writer.Write([]byte(fmt.Sprintf(format, values...)))
 }
 
-func (ctx *Context) Json(code int, object interface{}) {
+func (ctx *Context) JSON(code int, object interface{}) {
 	ctx.Writer.WriteHeader(code)
 	ctx.SetHeader("Content-Type", "application/json")
 	ctx.Status(code)
@@ -63,8 +68,25 @@ func (ctx *Context) Data(code int, data []byte) {
 	ctx.Writer.Write(data)
 }
 
-func (ctx *Context) Html(code int, html string) {
+func (ctx *Context) HTML(code int, html string) {
 	ctx.SetHeader("Content-Type", "text/html")
 	ctx.Status(code)
 	ctx.Writer.Write([]byte(html))
+}
+
+func (ctx *Context) Param(key string) string {
+	value, _ := ctx.Params[key]
+	return value
+}
+
+func(ctx * Context) Next() {
+	ctx.Index++
+	for ; ctx.Index < len(ctx.Handlers); ctx.Index++ {
+		ctx.Handlers[ctx.Index](ctx)
+    }
+}
+
+func (ctx *Context) Fail(code int, message string) {
+	ctx.String(code, "only for v2 route %s", message)
+	return
 }
