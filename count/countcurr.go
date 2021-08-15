@@ -43,7 +43,7 @@ func doAtoAdd() int64 {
 	return counter
 }
 
-func main()  {
+func main() {
 	fmt.Println(doMuxAdd())
 	fmt.Println(doAtoAdd())
 }

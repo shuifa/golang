@@ -1,22 +1,22 @@
 package gee
 
 import (
-    "log"
-    "time"
+	"log"
+	"time"
 )
 
 func Logger() HandlerFunc {
 
-    return func(ctx *Context) {
+	return func(ctx *Context) {
 
-        t := time.Now()
+		t := time.Now()
 
-        time.Sleep(time.Second)
-        log.Printf("%#v", ctx.Request)
+		time.Sleep(time.Second)
+		log.Printf("%#v", ctx.Request)
 
-        ctx.Next()
+		ctx.Next()
 
-        log.Printf("[%d] %s %v", ctx.StatusCode, ctx.Request.URL, time.Since(t))
-    }
+		log.Printf("[%d] %s %v", ctx.StatusCode, ctx.Request.URL, time.Since(t))
+	}
 
 }

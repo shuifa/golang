@@ -14,7 +14,7 @@ import (
 
 var (
 	counter int32
-	wg sync.WaitGroup
+	wg      sync.WaitGroup
 )
 
 type DBConnection struct {
@@ -31,7 +31,7 @@ func Factory() (io.Closer, error) {
 	return &DBConnection{id: counter}, nil
 }
 
-func performQuery(query int, pool *pool.Pool)  {
+func performQuery(query int, pool *pool.Pool) {
 	defer wg.Done()
 	resources, err := pool.AcquireResources()
 	if err != nil {
@@ -40,7 +40,7 @@ func performQuery(query int, pool *pool.Pool)  {
 	}
 	defer pool.ReleaseResource(resources)
 
-	time.Sleep(time.Duration(rand.Int() % 2) * time.Second)
+	time.Sleep(time.Duration(rand.Int()%2) * time.Second)
 
 	fmt.Println("查询完成 id" + fmt.Sprint(query))
 }

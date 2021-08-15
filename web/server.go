@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"githun.com/oushuifa/golang/web/controllers"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"githun.com/oushuifa/golang/web/controllers"
 )
 
 func main() {
@@ -24,4 +25,3 @@ func main() {
 
 	log.Fatalln(server.Run(":8080"))
 }
-

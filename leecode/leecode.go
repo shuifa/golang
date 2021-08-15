@@ -79,8 +79,8 @@ func kWeakestRows(mat [][]int, k int) []int {
 		k = len(weaks)
 	}
 
-	for i := 0; i < k; i++{
-	    ans = append(ans, weaks[i][0])
+	for i := 0; i < k; i++ {
+		ans = append(ans, weaks[i][0])
 	}
 
 	return ans
@@ -542,7 +542,7 @@ func longestCommonPrefix(strs []string) string {
 	}
 
 	fStr := strs[0]
-	var max, end int = len(fStr), len(fStr)
+	var max, end = len(fStr), len(fStr)
 
 	for i := 1; i < len(strs); i++ {
 		if len(strs[i]) == 0 {
@@ -571,7 +571,7 @@ func longestCommonPrefix(strs []string) string {
 //  字符串转换整数 (atoi)
 func myAtoi(s string) int {
 
-	var symbol int = 1
+	var symbol = 1
 	var str strings.Builder
 	var flag bool
 

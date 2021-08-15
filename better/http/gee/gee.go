@@ -101,4 +101,3 @@ func (g *RouterGroup) POST(pattern string, handler HandlerFunc) {
 func (g *RouterGroup) Use(middleware ...HandlerFunc) {
 	g.Middlewares = append(g.Middlewares, middleware...)
 }
-

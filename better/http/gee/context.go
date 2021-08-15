@@ -79,11 +79,11 @@ func (ctx *Context) Param(key string) string {
 	return value
 }
 
-func(ctx * Context) Next() {
+func (ctx *Context) Next() {
 	ctx.Index++
 	for ; ctx.Index < len(ctx.Handlers); ctx.Index++ {
 		ctx.Handlers[ctx.Index](ctx)
-    }
+	}
 }
 
 func (ctx *Context) Fail(code int, message string) {

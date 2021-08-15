@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"errors"
+	"log"
+	"net"
+
 	pb "github/shuifa/route"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
-	"log"
-	"net"
 )
 
 type RouteGuideServer struct {
@@ -43,20 +44,20 @@ func (g *RouteGuideServer) GetFeature(ctx context.Context, point *pb.Point) (*pb
 	return nil, errors.New("gjgh")
 }
 
-func (g *RouteGuideServer)ListFeatures(*pb.Rectangle, pb.RouteGuide_ListFeaturesServer) error {
+func (g *RouteGuideServer) ListFeatures(*pb.Rectangle, pb.RouteGuide_ListFeaturesServer) error {
 	return nil
 }
 
-func (g *RouteGuideServer)RecordRoute(pb.RouteGuide_RecordRouteServer) error {
+func (g *RouteGuideServer) RecordRoute(pb.RouteGuide_RecordRouteServer) error {
 	return nil
 }
 
-func (g *RouteGuideServer)Recommend(pb.RouteGuide_RecommendServer) error {
+func (g *RouteGuideServer) Recommend(pb.RouteGuide_RecommendServer) error {
 	return nil
 }
 
 func main() {
-	listen, err := net.Listen("tcp","localhost:5000")
+	listen, err := net.Listen("tcp", "localhost:5000")
 	if err != nil {
 		log.Fatalln(err)
 	}

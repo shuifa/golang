@@ -1,3 +1,4 @@
-module better/cache/lru
+module github.com/oushuifa/golang/better/cache/lru
 
 go 1.16
+
