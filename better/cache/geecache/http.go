@@ -1,6 +1,7 @@
 package geecache
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -10,6 +11,8 @@ import (
 	"sync"
 
 	"github.com/oushuifa/golang/better/cache/consistenthash"
+	pb "github.com/oushuifa/golang/better/cache/geecachepb"
+	"google.golang.org/protobuf/proto"
 )
 
 const (
@@ -68,6 +71,7 @@ func (p *HttpPool) PickPeer(key string) (peer PeerGetter, ok bool) {
 }
 
 func (p *HttpPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
 	if !strings.HasPrefix(r.URL.Path, p.basePath) {
 		panic("HTTPPool serving unexpected path: " + r.URL.Path)
 	}
@@ -88,6 +92,8 @@ func (p *HttpPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	byteView, err := group.Get(key)
+
+	body, err := proto.Marshal(&pb.Response{Value: byteView.ByteSlice()})
 	if err != nil {
 		p.Log(http.StatusText(http.StatusInternalServerError)+", when get value, key=%s, err=%s", key, err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -96,7 +102,7 @@ func (p *HttpPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/octet-stream")
 
-	_, err = w.Write(byteView.ByteSlice())
+	_, err = w.Write(body)
 	if err != nil {
 		p.Log("write response bytes err, err=%s", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -106,30 +112,35 @@ func (p *HttpPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (h *HttpGetter) Get(group, key string) ([]byte, error) {
+func (h *HttpGetter) Get(in *pb.Request, out *pb.Response) error {
 
-	uri := fmt.Sprintf("%v%v/%v", h.baseUrl, url.QueryEscape(group), url.QueryEscape(key))
+	uri := fmt.Sprintf("%v%v/%v", h.baseUrl, url.QueryEscape(in.GetGroup()), url.QueryEscape(in.GetKey()))
 
 	response, err := http.Get(uri)
 	if err != nil {
 		log.Fatalf("curl get err, err=%s", err.Error())
-		return nil, err
+		return err
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
 		log.Printf("read body err, err=%s", response.Status)
-		return nil, fmt.Errorf("server return %v", response.Status)
+		return fmt.Errorf("server return %v", response.Status)
 	}
 
 	dataBytes, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Printf("read body err, err=%s", err.Error())
-		return nil, err
+		return err
 	}
 
-	return dataBytes, nil
+	if err := json.Unmarshal(dataBytes, &response); err != nil {
+		return fmt.Errorf("decoding response body: %v", err)
+	}
+
+	return nil
 }
 
 // var _ PeerGetter = (*httpGetter)(nil)
+

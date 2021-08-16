@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"sync"
+
+	pb "github.com/oushuifa/golang/better/cache/geecachepb"
+	"github.com/oushuifa/golang/better/cache/singleflight"
 )
 
 type Getter interface {
@@ -21,6 +24,7 @@ type Group struct {
 	getter    Getter
 	mainCache cache
 	Peers     PeerPicker
+	loader    *singleflight.Group
 }
 
 var (
@@ -36,7 +40,7 @@ func NewGroup(name string, mainBytes int64, getter Getter) *Group {
 	mtx.Lock()
 	defer mtx.Unlock()
 
-	g := &Group{name, getter, cache{cacheBytes: mainBytes}, nil}
+	g := &Group{name, getter, cache{cacheBytes: mainBytes}, nil, &singleflight.Group{}}
 
 	groups[name] = g
 
@@ -64,17 +68,33 @@ func (g *Group) Get(key string) (ByteView, error) {
 }
 
 func (g *Group) load(key string) (value ByteView, err error) {
-	if g.Peers != nil {
-		if peer, ok := g.Peers.PickPeer(key); ok {
 
-			if bytes, err := peer.Get(g.name, key); err == nil {
-				return ByteView{b: bytes}, nil
-			} else {
-				log.Printf("[GeeCache] failed to load value from peer=%v, err=%v \n", g.Peers, err)
+	view, er := g.loader.Do(key, func() (interface{}, error) {
+
+		if g.Peers != nil {
+			if peer, ok := g.Peers.PickPeer(key); ok {
+				req := &pb.Request{
+					Group: g.name,
+					Key:   key,
+				}
+				res := &pb.Response {}
+				if err := peer.Get(req, res); err == nil {
+					return ByteView{b: res.Value}, nil
+				} else {
+					log.Printf("[GeeCache] failed to load value from peer=%v, err=%v \n", g.Peers, err)
+				}
 			}
 		}
+
+		return g.getLocally(key)
+	})
+
+	if er == nil {
+	    return view.(ByteView), nil
 	}
-	return g.getLocally(key)
+
+	return ByteView{}, nil
+
 }
 
 func (g *Group) getLocally(key string) (value ByteView, err error) {

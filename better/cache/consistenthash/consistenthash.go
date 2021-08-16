@@ -1,7 +1,6 @@
 package consistenthash
 
 import (
-	"fmt"
 	"hash/crc32"
 	"sort"
 	"strconv"
@@ -49,9 +48,7 @@ func (m *Map) Get(key string) string {
 
 	hashValue := int(m.hashFunc([]byte(key)))
 
-	idx := sort.Search(len(m.keys), func(i int) bool { return m.keys[i] >= hashValue })
-
-	fmt.Println("key, hashVal, idx, realNode", key, hashValue, idx, m.hashMap[m.keys[idx%len(m.keys)]])
+	idx := sort.Search(len(m.keys), func(i int) bool { return m.keys[i] >= hashValue % m.keys[len(m.keys)-1] })
 
 	return m.hashMap[m.keys[idx%len(m.keys)]]
 }
