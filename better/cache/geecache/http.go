@@ -142,5 +142,4 @@ func (h *HttpGetter) Get(in *pb.Request, out *pb.Response) error {
 	return nil
 }
 
-// var _ PeerGetter = (*httpGetter)(nil)
 
