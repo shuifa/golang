@@ -27,56 +27,80 @@ type Node struct {
 }
 
 func main() {
-	fmt.Println(networkDelayTime([][]int{{1,2,1}, {2,3,2},{1,3,2}}, 3, 1))
+	nums := []int{4, 3, 6, 8, 1, 9, 10, 0, -1, 5}
+	fmt.Println(heapShort(nums))
+	//fmt.Println(nums)
+}
+// 移动零
+func moveZeroes(nums []int) {
+	left, right, n := 0, 0, len(nums)
+	for right < n {
+		if nums[right] != 0 {
+			nums[left], nums[right] = nums[right], nums[left]
+			left++
+		}
+		right++
+	}
 }
 
-// 网络延迟时间
-func networkDelayTime(times [][]int, n int, k int) int {
+//  快速排序
+func quickSort(nums []int, left, right int) {
 
-	var nodes = make(map[int][][]int, 0)
-	for _, time := range times {
-		nodes[time[0]] = append(nodes[time[0]], time)
+	if len(nums) <= 1 {
+		return
 	}
 
-	if _, ok := nodes[k]; !ok {
-		return -1
-	}
-	var tM = make(map[int]bool)
-	var ansMin, ansMax int
+	var partition = func(nums []int, left, right int) int {
 
-	tNode := []int{k}
-	tM[k] = true
+		pivot := nums[left]
+		j := left
 
-	for len(tNode) > 0 {
-		t := tNode
-		tNode = []int{}
-
-		for _, v := range t {
-			if node, ok := nodes[v]; ok {
-				for _, n := range node {
-					if !tM[n[1]] {
-						if n[1] > k {
-							ansMax += n[2]
-						} else {
-							ansMin += n[2]
-						}
-						tNode = append(tNode, n[1])
-					}
-					tM[n[1]] = true
-				}
+		for i := left + 1; i <= right; i++ {
+			if nums[i] < pivot {
+				j++
+				nums[i], nums[j] = nums[j], nums[i]
 			}
 		}
+
+		nums[j], nums[left] = nums[left], nums[j]
+
+		return j
 	}
 
-	if len(tM) < n {
-		return -1
+	if left < right {
+		pivot := partition(nums, left, right)
+		quickSort(nums, left, pivot-1)
+		quickSort(nums, pivot+1, right)
 	}
 
-	if ansMax > ansMin {
-		return ansMax
-	}
+	return
+}
 
-	return ansMin
+func heapShort(nums []int) []int {
+	lens := len(nums) - 1
+	for i := lens/2; i >= 0; i-- { // 建堆 O(n) lens/2后面都是叶子节点，不需要向下调整
+		down(nums, i, lens)
+	}
+	for j := lens; j >= 1; j-- { //堆排序（升序）:堆顶(最大值)交换到末尾
+		nums[0], nums[j] = nums[j], nums[0]
+		lens--
+		down(nums, 0, lens)
+	}
+	return nums
+}
+
+func down(nums []int, i, lens int) {
+	max := i
+	if i<<1+1 <= lens && nums[i<<1+1] > nums[max] {
+		max = i<<1 + 1
+	}
+	if i<<1+2 <= lens && nums[i<<1+2] > nums[max] {
+		max = i<<1 + 2
+	}
+	if max != i {
+		nums[max], nums[i] = nums[i], nums[max]
+		down(nums, max, lens)
+	}
 }
 
 // 矩阵中战斗力最弱的 K 行
@@ -103,8 +127,8 @@ func kWeakestRows(mat [][]int, k int) []int {
 		k = len(weaks)
 	}
 
-	for i := 0; i < k; i++{
-	    ans = append(ans, weaks[i][0])
+	for i := 0; i < k; i++ {
+		ans = append(ans, weaks[i][0])
 	}
 
 	return ans
