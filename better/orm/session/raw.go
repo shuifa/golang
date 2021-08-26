@@ -4,13 +4,19 @@ import (
 	"database/sql"
 	"strings"
 
+	"github.com/oushuifa/golang/better/orm/clause"
+	"github.com/oushuifa/golang/better/orm/dialect"
 	"github.com/oushuifa/golang/better/orm/log"
+	"github.com/oushuifa/golang/better/orm/schema"
 )
 
 type Session struct {
-	db      *sql.DB
-	sql     strings.Builder
-	sqlVars []interface{}
+	db       *sql.DB
+	sql      strings.Builder
+	sqlVars  []interface{}
+	dialect  dialect.Dialect
+	refTable *schema.Schema
+	clause   clause.Clause
 }
 
 func New(db *sql.DB) *Session {
@@ -20,6 +26,7 @@ func New(db *sql.DB) *Session {
 func (s *Session) Clear() {
 	s.sql.Reset()
 	s.sqlVars = nil
+	s.clause = clause.Clause{}
 }
 
 func (s *Session) DB() *sql.DB {

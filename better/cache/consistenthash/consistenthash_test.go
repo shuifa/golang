@@ -14,15 +14,14 @@ func TestMap_Get(t *testing.T) {
 		"172.168.92.13:9090",
 		"195.125.78.222:18625",
 		"200.8.96.48:53698",
-		"123.10.231.189:65512",
+		"123.10.231.189:65000",
 		"189.20.10.13:5678",
 		"125.234.45.73:19456",
 		"45.189.177.179:23564",
 		"222.127.122.219:36547",
 		"173.163.60.59:45263",
-		"243.145.78.67:59874",
+		"243.145.78.67:59000",
 		"200.236.203.153:29846",
-		"99.8.165.58:57891",
 	}
 
 
@@ -41,7 +40,7 @@ func TestMap_Get(t *testing.T) {
 		for i := 0; i < len(keys); i++ {
 			idx := sort.SearchInts(hash.keys, keys[i])
 			// fmt.Println(node, hash.hashMap[hash.keys[(idx + 1)%len(hash.keys)]])
-			for hash.hashMap[hash.keys[(idx + 1)%len(hash.keys)]] == node {
+			for hash.hashMap[hash.keys[idx%len(hash.keys)]] == node {
 				idx++
 			}
 			tmp[hash.hashMap[hash.keys[(idx + 1)%len(hash.keys)]]]++
@@ -50,6 +49,7 @@ func TestMap_Get(t *testing.T) {
 		balances[node] = tmp
 	}
 
+	fmt.Println("195.125.78.222:18625 next node:")
 	for s, i := range balances["195.125.78.222:18625"] {
 		fmt.Println(s, i)
 	}
