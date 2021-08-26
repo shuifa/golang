@@ -10,23 +10,23 @@ import (
 var ErrPoolClosed = errors.New("pool has closed")
 
 type Pool struct {
-	Closed bool
-	factory func()(io.Closer, error)
-	mtx sync.Mutex
+	Closed    bool
+	factory   func() (io.Closer, error)
+	mtx       sync.Mutex
 	Resources chan io.Closer
 }
 
-func New(factory func()(closer io.Closer, err error), size int) (*Pool, error){
+func New(factory func() (closer io.Closer, err error), size int) (*Pool, error) {
 	return &Pool{
-		Closed: false,
-		Resources: make(chan io.Closer,size),
-		factory: factory,
+		Closed:    false,
+		Resources: make(chan io.Closer, size),
+		factory:   factory,
 	}, nil
 }
 
 func (p *Pool) AcquireResources() (io.Closer, error) {
 	select {
-	case resources, ok := <- p.Resources:
+	case resources, ok := <-p.Resources:
 		if !ok {
 			return nil, ErrPoolClosed
 		}
@@ -52,7 +52,7 @@ func (p *Pool) ReleaseResource(resource io.Closer) {
 
 }
 
-func (p *Pool) Close()  {
+func (p *Pool) Close() {
 	p.mtx.Lock()
 	defer p.mtx.Unlock()
 

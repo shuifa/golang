@@ -37,7 +37,7 @@ services:
     ports:
       - "8081:8081"
     healthcheck:
-      test:  wget --quiet --tries=3 --spider http://admin:admin123@10.10.10.60:8081 || exit 1
+      test: wget --quiet --tries=3 --spider http://admin:admin123@10.10.10.60:8081 || exit 1
       interval: 30s
       timeout: 10s
       retries: 3

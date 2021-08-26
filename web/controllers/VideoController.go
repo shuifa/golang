@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"githun.com/oushuifa/golang/web/models"
-	"net/http"
 )
 
 type Generator struct {
@@ -81,4 +82,3 @@ func (c *controller) Delete(ctx *gin.Context) {
 	}
 	ctx.String(http.StatusBadRequest, "bad request id %d not found", dVideo.Id)
 }
-

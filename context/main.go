@@ -8,9 +8,9 @@ import (
 
 func do(ctx context.Context) {
 	select {
-	case <- time.After(time.Second * 3):
+	case <-time.After(time.Second * 3):
 		fmt.Println("finished doing something")
-	case <- ctx.Done():
+	case <-ctx.Done():
 		err := ctx.Err()
 		if err != nil {
 			fmt.Println(err.Error())

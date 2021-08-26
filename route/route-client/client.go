@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+
 	pb "github/shuifa/golang/route"
 	"google.golang.org/grpc"
-	"log"
 )
 
-func runFirst(client pb.RouteGuideClient)  {
+func runFirst(client pb.RouteGuideClient) {
 	feature, err := client.GetFeature(context.Background(), &pb.Point{
 		Latitude:  31023500,
 		Longitude: 121437403,
