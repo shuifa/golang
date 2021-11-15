@@ -31,6 +31,15 @@ func main() {
 	fmt.Println(heapShort(nums))
 	//fmt.Println(nums)
 }
+
+// 寻找数组的中心索引
+func pivotIndex(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	return -1
+}
+
 // 移动零
 func moveZeroes(nums []int) {
 	left, right, n := 0, 0, len(nums)
