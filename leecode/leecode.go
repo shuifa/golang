@@ -27,17 +27,7 @@ type Node struct {
 }
 
 func main() {
-	nums := []int{4, 3, 6, 8, 1, 9, 10, 0, -1, 5}
-	fmt.Println(heapShort(nums))
-	//fmt.Println(nums)
-}
-
-// 寻找数组的中心索引
-func pivotIndex(nums []int) int {
-	if len(nums) == 0 {
-		return 0
-	}
-	return -1
+	fmt.Println(0 % 3)
 }
 
 // 移动零
@@ -87,10 +77,10 @@ func quickSort(nums []int, left, right int) {
 
 func heapShort(nums []int) []int {
 	lens := len(nums) - 1
-	for i := lens/2; i >= 0; i-- { // 建堆 O(n) lens/2后面都是叶子节点，不需要向下调整
+	for i := lens / 2; i >= 0; i-- { // 建堆 O(n) lens/2后面都是叶子节点，不需要向下调整
 		down(nums, i, lens)
 	}
-	for j := lens; j >= 1; j-- { //堆排序（升序）:堆顶(最大值)交换到末尾
+	for j := lens; j >= 1; j-- { // 堆排序（升序）:堆顶(最大值)交换到末尾
 		nums[0], nums[j] = nums[j], nums[0]
 		lens--
 		down(nums, 0, lens)
@@ -398,38 +388,38 @@ func isCovered(ranges [][]int, left, right int) bool {
 }
 
 //  复制带随机指针的链表
-func copyRandomList(head *Node) *Node {
-	if head == nil {
-		return nil
-	}
-	var newNode = &Node{}
-	t2 := newNode
-	var m = make([]*Node, 0)
-	var h1 = make(map[*Node]int)
-
-	t1 := head
-	for t1 != nil {
-		t2.Next = &Node{Val: t1.Val, Random: t1.Random}
-		m = append(m, t2.Next)
-		h1[t1] = len(m) - 1
-		t2 = t2.Next
-		t1 = t1.Next
-	}
-
-	t3 := newNode.Next
-	for t3 != nil {
-		if t3.Random != nil {
-			j := h1[t3.Random]
-			t3.Random = m[j]
-		}
-		t3 = t3.Next
-	}
-
-	return newNode.Next
-}
+// func copyRandomList(head *Node) *Node {
+// 	if head == nil {
+// 		return nil
+// 	}
+// 	var newNode = &Node{}
+// 	t2 := newNode
+// 	var m = make([]*Node, 0)
+// 	var h1 = make(map[*Node]int)
+//
+// 	t1 := head
+// 	for t1 != nil {
+// 		t2.Next = &Node{Val: t1.Val, Random: t1.Random}
+// 		m = append(m, t2.Next)
+// 		h1[t1] = len(m) - 1
+// 		t2 = t2.Next
+// 		t1 = t1.Next
+// 	}
+//
+// 	t3 := newNode.Next
+// 	for t3 != nil {
+// 		if t3.Random != nil {
+// 			j := h1[t3.Random]
+// 			t3.Random = m[j]
+// 		}
+// 		t3 = t3.Next
+// 	}
+//
+// 	return newNode.Next
+// }
 
 //  两个链表的第一个公共节点
-func getIntersectionNode(headA, headB *ListNode) *ListNode {
+func getIntersectionNode2(headA, headB *ListNode) *ListNode {
 
 	aNode, bNode := headA, headB
 	for aNode != bNode {
